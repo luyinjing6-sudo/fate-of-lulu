@@ -512,6 +512,30 @@ body::before {
   .chapter-title { font-size: 1.4rem; }
 }
 
+/* === EFFECT TOAST === */
+.effect-toast {
+  position: fixed;
+  top: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--ink);
+  color: var(--gold);
+  padding: 0.6rem 1.5rem;
+  border-radius: 2px;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  opacity: 0;
+  transition: all 0.4s ease;
+  z-index: 50;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.effect-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 /* === SCROLLBAR === */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--paper); }
@@ -1004,12 +1028,34 @@ function renderScene() {
     choHtml += `<button class="choice-btn ${c.type}" onclick="makeChoice(${i})">`;
     choHtml += `<span class="choice-label">${c.label}</span>`;
     choHtml += `${c.text}`;
-    choHtml += `<span class="choice-effect">${c.effect}</span>`;
     choHtml += `</button>`;
   });
   choArea.innerHTML = choHtml;
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showEffectToast(oldState, newState, effect) {
+  const changes = [];
+  const names = { dao: '道心', karma: '业力', will: '执念' };
+  ['dao', 'karma', 'will'].forEach(k => {
+    const diff = Math.max(0, Math.min(100, newState[k])) - oldState[k];
+    if (diff !== 0) {
+      const sign = diff > 0 ? '+' : '';
+      changes.push(`${names[k]} ${sign}${diff}`);
+    }
+  });
+  if (changes.length === 0) return;
+  
+  const toast = document.createElement('div');
+  toast.className = 'effect-toast';
+  toast.textContent = changes.join('　');
+  document.body.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add('show'));
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 500);
+  }, 2000);
 }
 
 function makeChoice(idx) {
@@ -1026,8 +1072,10 @@ function makeChoice(idx) {
     type: choice.type
   });
 
-  // Apply effects
+  // Snapshot old state, apply effects, show toast
+  const oldState = { dao: state.dao, karma: state.karma, will: state.will };
   choice.apply();
+  showEffectToast(oldState, state, choice.effect);
   updateStats();
 
   // Check for ending
