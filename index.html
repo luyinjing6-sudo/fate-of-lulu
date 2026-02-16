@@ -1,0 +1,1152 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>陆麓问道 · 世界意志</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1a2e;
+  --paper: #f5f0e8;
+  --paper-dark: #e8dfd3;
+  --accent: #8b2635;
+  --accent-light: #c4515e;
+  --gold: #c9a654;
+  --gold-dim: #a68532;
+  --jade: #5b8c6f;
+  --jade-light: #7ab893;
+  --purple: #6b4c8a;
+  --purple-light: #9471b8;
+  --text: #2c2c2c;
+  --text-dim: #6b6560;
+  --text-muted: #9e9589;
+  --shadow: rgba(26, 26, 46, 0.08);
+  --border: rgba(139, 38, 53, 0.15);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { font-size: 16px; }
+
+body {
+  font-family: 'Noto Serif SC', serif;
+  background: var(--paper);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* === BACKGROUND TEXTURE === */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a654' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* === LAYOUT === */
+.app {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* === TITLE SCREEN === */
+.title-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  animation: fadeIn 1.5s ease;
+}
+
+.title-decoration {
+  width: 120px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin-bottom: 2rem;
+}
+
+.title-screen h1 {
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: 3.5rem;
+  color: var(--accent);
+  letter-spacing: 0.3em;
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 0 rgba(139, 38, 53, 0.1);
+}
+
+.title-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-dim);
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  margin-bottom: 3rem;
+}
+
+.title-desc {
+  max-width: 480px;
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  line-height: 2;
+  margin-bottom: 3rem;
+  font-style: italic;
+}
+
+.title-start {
+  padding: 1rem 3rem;
+  background: var(--accent);
+  color: var(--paper);
+  border: none;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 2px;
+}
+
+.title-start:hover {
+  background: var(--accent-light);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(139, 38, 53, 0.2);
+}
+
+.title-credit {
+  margin-top: 3rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+}
+
+/* === GAME SCREEN === */
+.game-screen {
+  display: none;
+}
+
+.game-screen.active {
+  display: block;
+}
+
+/* === STATUS BAR === */
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.status-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.stat-group {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-name {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.stat-bar-wrap {
+  width: 80px;
+  height: 6px;
+  background: var(--paper-dark);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 0.2rem;
+}
+
+.stat-bar {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.8s ease;
+}
+
+.stat-bar.dao { background: var(--gold); }
+.stat-bar.karma { background: var(--jade); }
+.stat-bar.will { background: var(--accent); }
+
+.stat-val {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+.chapter-indicator {
+  font-size: 0.8rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* === NARRATIVE === */
+.narrative-area {
+  margin-bottom: 2rem;
+}
+
+.chapter-title {
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: 1.8rem;
+  color: var(--accent);
+  text-align: center;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.15em;
+}
+
+.chapter-subtitle {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 2.5rem;
+  font-style: italic;
+}
+
+.narrative-text {
+  font-size: 1.05rem;
+  line-height: 2.2;
+  color: var(--text);
+  text-align: justify;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: textReveal 1s ease forwards;
+}
+
+.narrative-text p {
+  margin-bottom: 1.2rem;
+  text-indent: 2em;
+}
+
+.narrative-text p:first-child::first-letter {
+  font-size: 2.5em;
+  float: left;
+  line-height: 1;
+  margin-right: 0.1em;
+  color: var(--accent);
+  font-family: 'ZCOOL XiaoWei', serif;
+}
+
+.narrative-text .highlight {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.narrative-text .gold {
+  color: var(--gold-dim);
+  font-weight: 600;
+}
+
+.narrative-text .jade {
+  color: var(--jade);
+  font-weight: 600;
+}
+
+/* === WORLD VOICE === */
+.world-voice {
+  text-align: center;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, transparent, rgba(201, 166, 84, 0.03), transparent);
+}
+
+.world-voice-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--gold-dim);
+  margin-bottom: 0.75rem;
+}
+
+.world-voice-text {
+  font-size: 1rem;
+  color: var(--text-dim);
+  font-style: italic;
+  line-height: 1.8;
+}
+
+/* === CHOICES === */
+.choices-area {
+  margin: 2.5rem 0;
+}
+
+.choices-prompt {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--gold-dim);
+  letter-spacing: 0.15em;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+.choice-btn {
+  display: block;
+  width: 100%;
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 0.75rem;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.95rem;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s;
+  line-height: 1.6;
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.choice-btn::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--gold);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.choice-btn:hover {
+  background: #fff;
+  border-color: var(--gold);
+  transform: translateX(4px);
+  box-shadow: 0 2px 12px var(--shadow);
+}
+
+.choice-btn:hover::before {
+  opacity: 1;
+}
+
+.choice-btn .choice-label {
+  font-size: 0.7rem;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.3rem;
+  display: block;
+}
+
+.choice-btn .choice-effect {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.3rem;
+  display: block;
+}
+
+.choice-btn.kind:hover { border-color: var(--jade); }
+.choice-btn.kind::before { background: var(--jade); }
+.choice-btn.cruel:hover { border-color: var(--accent); }
+.choice-btn.cruel::before { background: var(--accent); }
+.choice-btn.neutral:hover { border-color: var(--purple); }
+.choice-btn.neutral::before { background: var(--purple); }
+
+/* === ENDING SCREEN === */
+.ending-screen {
+  display: none;
+  min-height: 80vh;
+  padding-top: 4rem;
+}
+
+.ending-screen.active { display: block; }
+
+.ending-type {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--gold-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.ending-title {
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: 2.5rem;
+  color: var(--accent);
+  text-align: center;
+  letter-spacing: 0.2em;
+  margin-bottom: 0.5rem;
+}
+
+.ending-subtitle {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-bottom: 3rem;
+}
+
+.ending-text {
+  font-size: 1.05rem;
+  line-height: 2.2;
+  color: var(--text);
+  text-align: justify;
+  margin-bottom: 3rem;
+}
+
+.ending-text p {
+  margin-bottom: 1.2rem;
+  text-indent: 2em;
+}
+
+.ending-stats {
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.ending-stats h3 {
+  font-size: 0.8rem;
+  color: var(--gold-dim);
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+}
+
+.ending-stat-row {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.ending-stat {
+  text-align: center;
+}
+
+.ending-stat .label { font-size: 0.75rem; color: var(--text-muted); }
+.ending-stat .value { font-size: 1.5rem; font-weight: 700; margin-top: 0.25rem; }
+.ending-stat .value.gold { color: var(--gold-dim); }
+.ending-stat .value.jade { color: var(--jade); }
+.ending-stat .value.accent { color: var(--accent); }
+
+.restart-btn {
+  display: block;
+  margin: 2rem auto;
+  padding: 0.8rem 2.5rem;
+  background: none;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.restart-btn:hover {
+  background: var(--accent);
+  color: var(--paper);
+}
+
+/* === TRANSITION === */
+.scene-transition {
+  position: fixed;
+  inset: 0;
+  background: var(--ink);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+
+.scene-transition.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.transition-text {
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: 1.5rem;
+  color: var(--gold);
+  letter-spacing: 0.3em;
+  text-align: center;
+}
+
+/* === ANIMATIONS === */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes textReveal {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 600px) {
+  .title-screen h1 { font-size: 2.5rem; }
+  .stat-group { gap: 0.75rem; }
+  .stat-bar-wrap { width: 60px; }
+  .chapter-title { font-size: 1.4rem; }
+}
+
+/* === SCROLLBAR === */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--paper); }
+::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- SCENE TRANSITION -->
+<div class="scene-transition" id="transition">
+  <div class="transition-text" id="transitionText">···</div>
+</div>
+
+<div class="app">
+
+  <!-- TITLE SCREEN -->
+  <div class="title-screen" id="titleScreen">
+    <div class="title-decoration"></div>
+    <h1>陆麓问道</h1>
+    <div class="title-subtitle" style="margin-bottom:2rem;"></div>
+    <div class="title-desc">
+      你是天道，是这方世界的意志。<br>
+      你不能控制她的心，但你可以改变她脚下的路。<br>
+      给她机缘，或降下劫难。<br>
+      她叫陆麓。
+    </div>
+    <button class="title-start" onclick="startGame()">开天辟世</button>
+    <div class="title-credit">一个关于命运的文字游戏</div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div class="game-screen" id="gameScreen">
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="chapter-indicator" id="chapterIndicator">第一章</span>
+      <div class="stat-group">
+        <div class="stat">
+          <div class="stat-name">道心</div>
+          <div class="stat-bar-wrap"><div class="stat-bar dao" id="barDao" style="width:50%"></div></div>
+          <div class="stat-val" id="valDao">50</div>
+        </div>
+        <div class="stat">
+          <div class="stat-name">业力</div>
+          <div class="stat-bar-wrap"><div class="stat-bar karma" id="barKarma" style="width:50%"></div></div>
+          <div class="stat-val" id="valKarma">50</div>
+        </div>
+        <div class="stat">
+          <div class="stat-name">执念</div>
+          <div class="stat-bar-wrap"><div class="stat-bar will" id="barWill" style="width:70%"></div></div>
+          <div class="stat-val" id="valWill">70</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Narrative -->
+    <div class="narrative-area" id="narrativeArea"></div>
+
+    <!-- Choices -->
+    <div class="choices-area" id="choicesArea"></div>
+  </div>
+
+  <!-- ENDING SCREEN -->
+  <div class="ending-screen" id="endingScreen"></div>
+
+</div>
+
+<script>
+// ===== GAME STATE =====
+let state = {
+  dao: 50,      // 道心 (0-100): 高=通透，低=迷失
+  karma: 50,    // 业力 (0-100): 高=善，低=恶
+  will: 70,     // 执念 (0-100): 高=不屈，低=认命
+  chapter: 0,
+  scene: 0,
+  choices: [],
+  flags: {}
+};
+
+// ===== STORY DATA =====
+const story = {
+  chapters: [
+    // === CHAPTER 1: 灵根 ===
+    {
+      title: '灵根',
+      subtitle: '万物初始，一缕灵光入凡尘',
+      scenes: [
+        {
+          text: `<p>东渊大陆，苍茫无际。</p>
+<p>云岚山脚的小村里，一个叫<span class="highlight">陆麓</span>的女孩正在劈柴。她十六岁，瘦瘦的，眼神却很亮。村里人说她命硬——爹娘早亡，跟着叔婶长大，从不哭，只是咬着牙把该干的活干完。</p>
+<p>今日不同寻常。远处的云岚山顶忽然亮起一道<span class="gold">金光</span>，那是百年一遇的灵脉涌动。修仙门派<span class="highlight">青云宗</span>的弟子正在山下选人——凡是有灵根者，皆可拜入宗门。</p>
+<p>陆麓放下斧头，抬头看了一眼那道金光。她没有激动，只是把最后一根柴劈完，擦了擦手，朝山下走去。</p>`,
+          worldVoice: '她来了。你感受到她的灵根——微弱、驳杂、几乎不可察。五灵根，最差的那种。作为世界意志，你可以选择……',
+          choices: [
+            {
+              label: '赐福',
+              text: '暗中净化她的灵根，将五灵根提升为双灵根，给她一个公平的起点',
+              type: 'kind',
+              effect: '道心+10，执念-5',
+              apply: () => { state.dao += 10; state.will -= 5; state.karma += 5; state.flags.rootUpgrade = true; }
+            },
+            {
+              label: '旁观',
+              text: '不做任何干预。五灵根就五灵根，她的命运由她自己走',
+              type: 'neutral',
+              effect: '执念+10',
+              apply: () => { state.will += 10; }
+            },
+            {
+              label: '试炼',
+              text: '不仅不帮，还降下一道灵压，让测灵石在她触碰时碎裂——看她如何面对',
+              type: 'cruel',
+              effect: '执念+15，业力-10',
+              apply: () => { state.will += 15; state.karma -= 10; state.flags.stoneBroken = true; }
+            }
+          ]
+        },
+        {
+          text: () => {
+            if (state.flags.rootUpgrade) {
+              return `<p>测灵石亮起<span class="gold">两道光芒</span>——金与木，双灵根。</p>
+<p>青云宗的长老微微颔首，在场的村民发出惊叹。陆麓面色平静，但你看到她攥紧的拳头微微发抖。</p>
+<p>"不错的资质。"长老说，"可入外门。"</p>
+<p>陆麓没有谢恩，只是问了一句：<span class="highlight">"外门弟子能去藏经阁吗？"</span></p>
+<p>长老笑了。</p>`;
+            } else if (state.flags.stoneBroken) {
+              return `<p>她的手触上测灵石的瞬间，石头<span class="highlight">碎了</span>。</p>
+<p>人群哗然。青云宗弟子皱起眉头，旁边有人窃笑："这是什么废物灵根，连石头都承受不住。"</p>
+<p>陆麓看着满地碎片，沉默了三秒。然后她蹲下来，捡起最大的一块碎片，走到长老面前：</p>
+<p><span class="highlight">"石头碎了，但灵光你们看到了吧。收不收？"</span></p>
+<p>长老愣了一瞬，随即大笑：</p>
+<p>"有意思。杂役弟子，你愿不愿做？"</p>
+<p>"做。"她连犹豫都没有。</p>`;
+            } else {
+              return `<p>测灵石亮起微弱的<span class="text-muted">五色杂光</span>——五灵根，最低等的资质。</p>
+<p>青云宗弟子摇了摇头："五灵根……勉强收为杂役弟子吧。"</p>
+<p>旁边有人同情地看着她，有人窃笑。</p>
+<p>陆麓的表情没有任何变化。她只是问：<span class="highlight">"杂役弟子能修炼吗？"</span></p>
+<p>"能，但进度会很慢——"</p>
+<p>"那就行。"</p>`;
+            }
+          },
+          worldVoice: '她上山了。前路漫漫，你有些好奇——这丫头能走到哪一步？',
+          choices: [
+            {
+              label: '指引',
+              text: '在她入山的第一夜，托梦给她一段口诀——那是适合驳杂灵根的旁门功法',
+              type: 'kind',
+              effect: '道心+5，业力+5',
+              apply: () => { state.dao += 5; state.karma += 5; state.flags.dreamMethod = true; }
+            },
+            {
+              label: '沉默',
+              text: '你是天道，不是她的师父。她自己去找路',
+              type: 'neutral',
+              effect: '无变化',
+              apply: () => { }
+            }
+          ]
+        }
+      ]
+    },
+    // === CHAPTER 2: 磨砺 ===
+    {
+      title: '磨砺',
+      subtitle: '修行苦，人心更苦',
+      scenes: [
+        {
+          text: () => {
+            const base = `<p>三年过去了。</p>
+<p>陆麓从杂役弟子做起，白天扫院、运水、种灵草，晚上在角落里打坐修炼。别人用一个月突破的关卡，她要用半年。但她从来不抱怨——<span class="highlight">抱怨有什么用呢？不如多练一遍。</span></p>`;
+            if (state.flags.dreamMethod) {
+              return base + `<p>你托梦给她的那段旁门功法，她居然真的练出了名堂。五行灵根互相牵扯的弊端，在这门功法里反而成了优势——<span class="gold">五行流转，生生不息</span>。虽然修为依然垫底，但根基扎得极稳。</p>
+<p>可是今天，出事了。</p>
+<p>内门大比将至，她的舍友<span class="jade">沈清</span>——一个三灵根的温柔姑娘——被师兄<span class="highlight">赵元</span>的弟子故意打伤，目的是清除竞争对手。沈清是唯一一个肯和陆麓说话的人。</p>`;
+            } else {
+              return base + `<p>她在藏经阁里翻遍了所有初阶功法，最终自己摸索出了一条路——<span class="gold">不求快，求稳</span>。五灵根的劣势是进度慢，但她发现如果五行都练，虽然慢，根基却异常牢固。</p>
+<p>可是今天，出事了。</p>
+<p>内门大比将至，她唯一的朋友<span class="jade">沈清</span>——一个温柔的三灵根姑娘——被师兄<span class="highlight">赵元</span>的弟子故意打伤，目的是清除竞争对手。沈清躺在床上，眼里全是泪。</p>`;
+            }
+          },
+          worldVoice: '陆麓站在沈清床前，拳头攥得指节发白。你看到她眼底的怒火。她打不过赵元的弟子——实力差距太大。但她在想办法。作为世界意志，你要怎么做？',
+          choices: [
+            {
+              label: '天降机缘',
+              text: '让陆麓在山涧"偶然"发现一枚洗髓丹——足以让她短期内提升一个大境界',
+              type: 'kind',
+              effect: '道心+10，执念-10，业力+5',
+              apply: () => { state.dao += 10; state.will -= 10; state.karma += 5; state.flags.pillFound = true; }
+            },
+            {
+              label: '制造公平',
+              text: '不给她捷径，但让赵元的弟子在大比前偶染风寒，实力下降三成——天道讲公平',
+              type: 'neutral',
+              effect: '业力-5，道心+5',
+              apply: () => { state.karma -= 5; state.dao += 5; state.flags.enemyWeakened = true; }
+            },
+            {
+              label: '火上浇油',
+              text: '让赵元本人也来观战，并当众羞辱陆麓的资质。逼她在绝境中爆发——或者崩溃',
+              type: 'cruel',
+              effect: '执念+20，业力-15',
+              apply: () => { state.will += 20; state.karma -= 15; state.flags.publicHumiliation = true; }
+            }
+          ]
+        },
+        {
+          text: () => {
+            if (state.flags.pillFound) {
+              return `<p>大比那天，所有人都震惊了。</p>
+<p>陆麓站在擂台上，气息沉稳如渊。洗髓丹的效果加上她三年扎实的根基，她的实力已经不弱于任何外门弟子。</p>
+<p>三场比试，她赢了两场。不是靠蛮力——是靠<span class="gold">对战斗的理解</span>。别人出招快，她就找破绽；别人灵力多，她就打消耗。</p>
+<p><span class="highlight">"你不该在这里。"</span>赵元的弟子咬牙说。</p>
+<p>"可我就在这里了。"陆麓擦了擦嘴角的血，笑了。</p>`;
+            } else if (state.flags.enemyWeakened) {
+              return `<p>大比那天，赵元的弟子面色苍白——显然身体不适。</p>
+<p>陆麓看了他一眼，没有任何幸灾乐祸。她只是上了擂台，以最扎实的基本功，一招一式地打。</p>
+<p>这场比试打了整整一炷香的时间。最终陆麓以一个出人意料的<span class="gold">五行连环术</span>赢下了比赛——五种低阶术法串联在一起，威力竟然超过了任何单一的中阶术法。</p>
+<p>台下一片安静。然后有人开始鼓掌。</p>
+<p>赵元冷哼一声，拂袖而去。</p>`;
+            } else {
+              return `<p>大比那天，赵元坐在主席台上，当着所有人的面说：</p>
+<p><span class="highlight">"五灵根也敢来比？浪费大家时间。"</span></p>
+<p>全场哄笑。陆麓的脸白了一瞬，然后红了。</p>
+<p>她上了擂台。第一场，输了。第二场，还是输了。第三场，对手是赵元最得意的弟子，实力远在她之上。</p>
+<p>所有人都以为她会认输。</p>
+<p>她没有。她站在擂台上，浑身是伤，灵力几乎耗尽，但<span class="highlight">眼睛亮得吓人</span>。</p>
+<p>最后一击，她把五种灵力全部混在一起，打出了一记谁也没见过的术法——<span class="gold">五行归元</span>。虽然威力不足以赢，但把对手逼退了三步。</p>
+<p>赵元的笑容消失了。</p>
+<p>"记住我的名字。"陆麓吐了口血，声音不大，但整个演武场都听见了。<span class="highlight">"陆麓。"</span></p>`;
+            }
+          },
+          worldVoice: state.flags.publicHumiliation
+            ? '她没赢，但她让所有人记住了她。这份执念……让你想起了某些飞升成功的前辈。也让你想起了某些入魔的疯子。'
+            : '她在成长。但前方的路，还长。',
+          choices: [
+            {
+              label: '欣赏',
+              text: '她值得一个好师父。引导云岚山隐居的散修「无名老人」注意到她',
+              type: 'kind',
+              effect: '道心+10，业力+10',
+              apply: () => { state.dao += 10; state.karma += 10; state.flags.masterFound = true; }
+            },
+            {
+              label: '加压',
+              text: '让赵元开始针对她——暗中阻断她的修炼资源，看她如何应对宗门政治',
+              type: 'cruel',
+              effect: '执念+10，业力-10，道心+5',
+              apply: () => { state.will += 10; state.karma -= 10; state.dao += 5; state.flags.oppressed = true; }
+            }
+          ]
+        }
+      ]
+    },
+    // === CHAPTER 3: 问道 ===
+    {
+      title: '问道',
+      subtitle: '大道三千，她选哪一条？',
+      scenes: [
+        {
+          text: () => {
+            let base = `<p>又是五年。</p><p>陆麓二十四岁了。`;
+
+            if (state.flags.masterFound) {
+              base += `无名老人教了她三年，然后在一个清晨悄然离去，只留下一句话：<span class="gold">"道在脚下，不在山上。"</span></p>
+<p>她的修为已入筑基中期，在同辈中不算最强，但根基之深厚，连长老都赞叹。更重要的是，她开始有了自己对道的理解——</p>`;
+            } else if (state.flags.oppressed) {
+              base += `这五年，赵元处处打压她。好的任务轮不到她，丹药分配没她的份，甚至有人暗中在她修炼时捣乱。</p>
+<p>但<span class="highlight">她像野草一样</span>，越踩越硬。没有丹药，她就去深山采药自己炼；没有任务积分，她就帮低阶弟子解决妖兽换取资源。</p>
+<p>五年下来，她不仅没被压垮，反而因为这些磨难，修为竟然突破到了筑基中期——</p>`;
+            } else {
+              base += `修行之路走得不快，但她从来没停过。</p>
+<p>筑基中期，在天才如云的青云宗里不算什么。但没有人再敢小看她。因为每个和她交过手的人都知道——<span class="highlight">这个女人好像不知道什么叫认输</span>。</p>`;
+            }
+
+            base += `<p>今日，宗门大事：<span class="highlight">秘境开启</span>。</p>
+<p>百年一遇的混沌秘境出现在云岚山后。秘境中机缘无数，但也危机重重——传闻上一次开启时，进去一百人，只出来了十一个。</p>
+<p>陆麓站在秘境入口前。她知道，这可能是她这辈子最大的机缘。也可能是她的葬身之地。</p>`;
+            return base;
+          },
+          worldVoice: '秘境是你造的。你可以决定她在里面遇到什么。',
+          choices: [
+            {
+              label: '赐以造化',
+              text: '在秘境深处放置一株万年灵药，只有五行灵根才能采摘——这是专门为她准备的机缘',
+              type: 'kind',
+              effect: '道心+15，执念-10',
+              apply: () => { state.dao += 15; state.will -= 10; state.karma += 5; state.flags.secretHerb = true; }
+            },
+            {
+              label: '公平对待',
+              text: '不做任何特殊安排。秘境中的机缘与危险，对所有人一视同仁',
+              type: 'neutral',
+              effect: '道心+5，执念+5',
+              apply: () => { state.dao += 5; state.will += 5; }
+            },
+            {
+              label: '最终试炼',
+              text: '在秘境最深处放置她最大的心魔——让她直面自己的恐惧和执念。通过则蜕变，失败则入魔',
+              type: 'cruel',
+              effect: '执念+15，道心+10，业力-10',
+              apply: () => { state.will += 15; state.dao += 10; state.karma -= 10; state.flags.heartDemon = true; }
+            }
+          ]
+        },
+        {
+          text: () => {
+            if (state.flags.secretHerb) {
+              return `<p>秘境深处，万象森林。</p>
+<p>陆麓在迷雾中走了三天三夜，身上的伤口越来越多。其他弟子早已散落各处，有的找到了机缘，有的已经倒下。</p>
+<p>第四天，她在一处绝壁下看到了它——一株散发着<span class="gold">五色流光</span>的灵草。五行灵根的气息与它完美共鸣，灵草主动朝她弯下了腰。</p>
+<p>她愣了一下，然后笑了。</p>
+<p><span class="highlight">"原来五灵根也有好处啊。"</span></p>
+<p>她小心翼翼地采下灵草，盘膝而坐，就在这绝壁之下开始炼化。五行灵力在她体内疯狂运转，每一条经脉都在重塑。</p>
+<p>三天后，她睁开眼。<span class="gold">筑基巅峰。</span></p>`;
+            } else if (state.flags.heartDemon) {
+              return `<p>秘境最深处，不是森林，不是洞穴——是一面<span class="highlight">镜子</span>。</p>
+<p>陆麓站在镜子前，看到了另一个自己。</p>
+<p>镜中的陆麓穿着华服，修为通天，身边站着无数恭敬的弟子。她功成名就，天下无敌。</p>
+<p>然后镜子碎了，碎片里映出另一个画面——</p>
+<p>那个小女孩，在劈柴。没有灵根，没有宗门，没有修仙。只是一个普通人，在一个小村子里，过着平凡的一生。</p>
+<p><span class="highlight">"你想要哪一个？"</span> 心魔问她。</p>
+<p>陆麓闭上眼。很久很久之后，她说：</p>
+<p>"都不要。<span class="gold">我只要走我自己的路。不是你给的路，不是天给的路——是我自己走出来的路。</span>"</p>
+<p>镜子彻底粉碎。她体内的灵力暴涨，直冲<span class="gold">筑基巅峰</span>——但代价是她的左眼永远失去了视力。</p>`;
+            } else {
+              return `<p>秘境中的七天，是陆麓活了二十四年最漫长的七天。</p>
+<p>妖兽、阵法、迷雾、毒瘴——她一一闯过。没有外挂，没有奇遇，全凭她扎实的根基和<span class="highlight">一股说不清的狠劲</span>。</p>
+<p>第五天，她找到了一处灵泉。灵泉水可以加速修炼，但只够一个人用。</p>
+<p>她遇到了同样找到这里的沈清。</p>
+<p>沈清说："你用吧。你比我更需要。"</p>
+<p>陆麓看了她一眼，把灵泉水分成两份。<span class="highlight">"一人一半。"</span></p>
+<p>第七天，秘境关闭。陆麓走了出来。修为：<span class="gold">筑基后期</span>。不是最亮眼的成绩，但她活着出来了。</p>`;
+            }
+          },
+          worldVoice: () => {
+            // Determine ending
+            const daoHigh = state.dao >= 70;
+            const karmaHigh = state.karma >= 60;
+            const willHigh = state.will >= 80;
+            const willLow = state.will < 40;
+
+            if (daoHigh && karmaHigh) return '她的道心清明，业力端正。飞升之路，已在脚下。你要送她最后一程吗？';
+            if (willHigh && !karmaHigh) return '她的执念如此强烈，你闻到了入魔的气息。但谁说入魔就是错的呢？';
+            return '她走过了风雨，看淡了执念。也许最好的结局，不是飞升，而是放下。';
+          },
+          choices: () => {
+            const daoHigh = state.dao >= 70;
+            const karmaHigh = state.karma >= 60;
+            const willHigh = state.will >= 80;
+
+            const choices = [];
+
+            if (daoHigh && karmaHigh) {
+              choices.push({
+                label: '飞升',
+                text: '打开天门，降下仙雷，给她最后的考验——渡过去，便是仙',
+                type: 'kind',
+                effect: '结局：飞升',
+                apply: () => { state.flags.ending = 'ascend'; }
+              });
+            }
+
+            if (willHigh) {
+              choices.push({
+                label: '入魔',
+                text: '在她执念最深的时刻，让魔气侵入——看她是被吞噬，还是以魔证道',
+                type: 'cruel',
+                effect: '结局：入魔',
+                apply: () => { state.flags.ending = 'demon'; }
+              });
+            }
+
+            choices.push({
+              label: '归隐',
+              text: '让一阵山风吹过，带着故乡泥土的气息。提醒她：世上不止有修仙',
+              type: 'neutral',
+              effect: '结局：归隐',
+              apply: () => { state.flags.ending = 'retire'; }
+            });
+
+            return choices;
+          }
+        }
+      ]
+    }
+  ],
+
+  // === ENDINGS ===
+  endings: {
+    ascend: {
+      type: '飞升',
+      title: '一剑破天',
+      subtitle: '道在人间，不在云端',
+      text: `<p>天劫降临的那一天，整个东渊大陆都看到了那道光。</p>
+<p>九九八十一道仙雷，一道比一道猛烈。陆麓站在云岚山顶，浑身浴血，但背脊挺得笔直。</p>
+<p>最后一道雷落下时，她没有躲，也没有硬接——她张开双臂，像小时候在雨里奔跑一样，<span class="gold">笑了</span>。</p>
+<p>"谢谢你。"她抬头看着天空，仿佛在对某个存在说话。"不管你是帮我还是为难我——都谢谢你。没有那些磨难，我走不到这里。"</p>
+<p>仙门开启。金光万丈。</p>
+<p>陆麓踏入仙门前，回头看了一眼人间。云岚山的云还是那么白，山脚的村子还是那么小。</p>
+<p>她看到一个小女孩在村口劈柴。</p>
+<p>陆麓笑了笑，转身离去。</p>
+<p style="text-align:center;color:var(--gold-dim);margin-top:2rem;">—— 天道无私，以万物为刍狗。<br>但天道记住了她。——</p>`
+    },
+    demon: {
+      type: '入魔',
+      title: '执念成道',
+      subtitle: '我不入地狱，谁入地狱',
+      text: `<p>她入魔了。</p>
+<p>但不是你想象中的入魔。</p>
+<p>没有疯狂，没有杀戮，没有黑化。她的魔，是<span class="highlight">执念</span>。</p>
+<p>她对不公的执念。对变强的执念。对"我偏要做到"的执念。这些执念化作了魔气，融入了她的血脉。</p>
+<p>正道修士说她是魔。她说："你们觉得是就是吧。"</p>
+<p>她没有去祸害苍生，也没有毁灭宗门。她只是离开了青云宗，在东渊大陆最荒凉的地方建了一座小屋，收留那些和她一样被嫌弃的"废物"弟子。</p>
+<p>五灵根的、残疾的、被驱逐的——她来者不拒。</p>
+<p>百年后，那个地方有了一个名字：<span class="highlight">归墟</span>。</p>
+<p>归墟没有正道邪道之分，只有一条规矩：<span class="gold">"不准说别人是废物。"</span></p>
+<p>史书上说她是魔头。但她的弟子们叫她<span class="highlight">先生</span>。</p>
+<p style="text-align:center;color:var(--accent);margin-top:2rem;">—— 天道造了风雨。<br>她在雨里种了花。——</p>`
+    },
+    retire: {
+      type: '归隐',
+      title: '人间烟火',
+      subtitle: '修仙修了一辈子，最后修的是心',
+      text: `<p>那阵风吹来的时候，陆麓正坐在秘境出口，看着远处的云海。</p>
+<p>风里有泥土的味道，有柴火的味道，有小时候叔婶做饭的味道。</p>
+<p>她忽然觉得很累。不是身体累——是<span class="highlight">心累</span>。</p>
+<p>修仙修了八年。每一天都在拼命，每一步都在证明自己。证明给谁看呢？给看不起她的赵元？给天道？给死去的爹娘？</p>
+<p>还是给她自己？</p>
+<p>陆麓站起来，走下了云岚山。</p>
+<p>她回到了那个小村子。叔婶老了，村里多了好多新面孔。她用修仙学到的阵法帮村里引了水渠，用灵草知识教村民种药材。</p>
+<p>沈清偶尔来看她，说她浪费了天赋。陆麓笑着说：</p>
+<p><span class="gold">"种地也是修行啊。"</span></p>
+<p>五十年后，陆麓在自家院子里安静地闭上了眼。她的修为永远停在了筑基巅峰，没有金丹，没有元婴，没有飞升。</p>
+<p>但她种的药材救了很多人。她修的水渠灌溉了整个山谷。她教出来的孩子里，有三个后来成了青云宗的内门弟子。</p>
+<p>她的墓碑上只刻了五个字：</p>
+<p style="text-align:center;font-size:1.3rem;color:var(--jade);margin:1.5rem 0;letter-spacing:0.3em;font-weight:600;">陆麓，种地的</p>
+<p style="text-align:center;color:var(--text-muted);margin-top:2rem;">—— 天道看着她的一生，忽然觉得：<br>也许飞升不是唯一的圆满。——</p>`
+    }
+  }
+};
+
+// ===== RENDER FUNCTIONS =====
+function updateStats() {
+  state.dao = Math.max(0, Math.min(100, state.dao));
+  state.karma = Math.max(0, Math.min(100, state.karma));
+  state.will = Math.max(0, Math.min(100, state.will));
+
+  document.getElementById('barDao').style.width = state.dao + '%';
+  document.getElementById('barKarma').style.width = state.karma + '%';
+  document.getElementById('barWill').style.width = state.will + '%';
+  document.getElementById('valDao').textContent = state.dao;
+  document.getElementById('valKarma').textContent = state.karma;
+  document.getElementById('valWill').textContent = state.will;
+}
+
+function renderScene() {
+  const chapter = story.chapters[state.chapter];
+  const scene = chapter.scenes[state.scene];
+
+  document.getElementById('chapterIndicator').textContent =
+    ['第一章', '第二章', '第三章', '第四章'][state.chapter];
+
+  const narArea = document.getElementById('narrativeArea');
+  const choArea = document.getElementById('choicesArea');
+
+  // Chapter title on first scene
+  let html = '';
+  if (state.scene === 0) {
+    html += `<div class="chapter-title">${chapter.title}</div>`;
+    html += `<div class="chapter-subtitle">${chapter.subtitle}</div>`;
+  }
+
+  // Narrative text
+  const text = typeof scene.text === 'function' ? scene.text() : scene.text;
+  html += `<div class="narrative-text">${text}</div>`;
+
+  // World voice
+  const voice = typeof scene.worldVoice === 'function' ? scene.worldVoice() : scene.worldVoice;
+  html += `<div class="world-voice">`;
+  html += `<div class="world-voice-label">— 世界意志 —</div>`;
+  html += `<div class="world-voice-text">${voice}</div>`;
+  html += `</div>`;
+
+  narArea.innerHTML = html;
+
+  // Choices
+  const choices = typeof scene.choices === 'function' ? scene.choices() : scene.choices;
+  let choHtml = `<div class="choices-prompt">你的抉择</div>`;
+  choices.forEach((c, i) => {
+    choHtml += `<button class="choice-btn ${c.type}" onclick="makeChoice(${i})">`;
+    choHtml += `<span class="choice-label">${c.label}</span>`;
+    choHtml += `${c.text}`;
+    choHtml += `<span class="choice-effect">${c.effect}</span>`;
+    choHtml += `</button>`;
+  });
+  choArea.innerHTML = choHtml;
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function makeChoice(idx) {
+  const chapter = story.chapters[state.chapter];
+  const scene = chapter.scenes[state.scene];
+  const choices = typeof scene.choices === 'function' ? scene.choices() : scene.choices;
+  const choice = choices[idx];
+
+  // Record choice
+  state.choices.push({
+    chapter: state.chapter,
+    scene: state.scene,
+    label: choice.label,
+    type: choice.type
+  });
+
+  // Apply effects
+  choice.apply();
+  updateStats();
+
+  // Check for ending
+  if (state.flags.ending) {
+    showTransition('…命运已定…', () => showEnding());
+    return;
+  }
+
+  // Advance scene
+  state.scene++;
+  if (state.scene >= chapter.scenes.length) {
+    state.chapter++;
+    state.scene = 0;
+    if (state.chapter >= story.chapters.length) {
+      // Determine ending by stats if not set
+      determineEnding();
+      showTransition('…命运已定…', () => showEnding());
+      return;
+    }
+    showTransition(story.chapters[state.chapter].title, () => renderScene());
+  } else {
+    renderScene();
+  }
+}
+
+function determineEnding() {
+  if (state.flags.ending) return;
+  if (state.dao >= 70 && state.karma >= 60) state.flags.ending = 'ascend';
+  else if (state.will >= 80) state.flags.ending = 'demon';
+  else state.flags.ending = 'retire';
+}
+
+function showTransition(text, callback) {
+  const el = document.getElementById('transition');
+  document.getElementById('transitionText').textContent = text;
+  el.classList.add('active');
+  setTimeout(() => {
+    callback();
+    setTimeout(() => {
+      el.classList.remove('active');
+    }, 500);
+  }, 1500);
+}
+
+function showEnding() {
+  const ending = story.endings[state.flags.ending];
+
+  document.getElementById('gameScreen').classList.remove('active');
+  const endScreen = document.getElementById('endingScreen');
+  endScreen.classList.add('active');
+
+  let kindCount = state.choices.filter(c => c.type === 'kind').length;
+  let cruelCount = state.choices.filter(c => c.type === 'cruel').length;
+  let neutralCount = state.choices.filter(c => c.type === 'neutral').length;
+
+  endScreen.innerHTML = `
+    <div class="ending-type">结局 · ${ending.type}</div>
+    <div class="ending-title">${ending.title}</div>
+    <div class="ending-subtitle">${ending.subtitle}</div>
+    <div class="ending-text">${ending.text}</div>
+    <div class="ending-stats">
+      <h3>世界意志的抉择</h3>
+      <div class="ending-stat-row">
+        <div class="ending-stat">
+          <div class="label">道心</div>
+          <div class="value gold">${state.dao}</div>
+        </div>
+        <div class="ending-stat">
+          <div class="label">业力</div>
+          <div class="value jade">${state.karma}</div>
+        </div>
+        <div class="ending-stat">
+          <div class="label">执念</div>
+          <div class="value accent">${state.will}</div>
+        </div>
+      </div>
+      <div class="ending-stat-row" style="margin-top:1rem;">
+        <div class="ending-stat">
+          <div class="label">赐福 🌿</div>
+          <div class="value jade">${kindCount}</div>
+        </div>
+        <div class="ending-stat">
+          <div class="label">旁观 🌙</div>
+          <div class="value" style="color:var(--purple)">${neutralCount}</div>
+        </div>
+        <div class="ending-stat">
+          <div class="label">试炼 🔥</div>
+          <div class="value accent">${cruelCount}</div>
+        </div>
+      </div>
+    </div>
+    <button class="restart-btn" onclick="restartGame()">再造乾坤</button>
+    <p style="text-align:center;font-size:0.75rem;color:var(--text-muted);margin-top:1rem;">
+      共有三种结局，你的选择塑造了不同的陆麓
+    </p>
+  `;
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function startGame() {
+  document.getElementById('titleScreen').style.display = 'none';
+  document.getElementById('gameScreen').classList.add('active');
+  updateStats();
+  renderScene();
+}
+
+function restartGame() {
+  state = { dao: 50, karma: 50, will: 70, chapter: 0, scene: 0, choices: [], flags: {} };
+  document.getElementById('endingScreen').classList.remove('active');
+  document.getElementById('endingScreen').innerHTML = '';
+  document.getElementById('titleScreen').style.display = '';
+  document.getElementById('gameScreen').classList.remove('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
+
+
+
