@@ -697,11 +697,40 @@ const story = {
         }
       ]
     },
+    // === CHAPTER 1.5: 新增场景 - 上山路上 ===
+    // (inserted as extra scene in chapter 1 below)
+
     // === CHAPTER 2: 磨砺 ===
     {
       title: '磨砺',
       subtitle: '修行苦，人心更苦',
       scenes: [
+        {
+          text: () => {
+            return `<p>上山的路很长。</p>
+<p>陆麓跟在一群新弟子后面，沉默地走着。旁边有个圆脸姑娘一直在哭——她舍不得家里人。</p>
+<p>走到半山腰，一个瘦小的男孩摔倒了，行李散了一地。其他人要么没看见，要么看见了也没停。</p>
+<p>陆麓走过去，把他拉起来，帮他捡好东西，什么都没说，继续走。</p>
+<p>那个男孩后来成了她在宗门里第一个认识的人——<span class="jade">周小鱼</span>，一个四灵根的普通弟子。</p>`;
+          },
+          worldVoice: '一个小小的善意。你注意到了——她做好事的时候，从来不需要理由。',
+          choices: [
+            {
+              label: '记住',
+              text: '记下这个叫周小鱼的男孩。也许将来，他会是她的助力',
+              type: 'kind',
+              effect: '',
+              apply: () => { state.karma += 5; state.flags.zhouXiaoyu = true; }
+            },
+            {
+              label: '无视',
+              text: '一个四灵根的小子，掀不起什么浪。你的注意力回到陆麓身上',
+              type: 'neutral',
+              effect: '',
+              apply: () => { state.dao += 3; }
+            }
+          ]
+        },
         {
           text: () => {
             const base = `<p>三年过去了。</p>
@@ -775,15 +804,49 @@ const story = {
               label: '欣赏',
               text: '她值得一个好师父。引导云岚山隐居的散修「无名老人」注意到她',
               type: 'kind',
-              effect: '道心+10，业力+10',
+              effect: '',
               apply: () => { state.dao += 10; state.karma += 10; state.flags.masterFound = true; }
             },
             {
               label: '加压',
               text: '让赵元开始针对她——暗中阻断她的修炼资源，看她如何应对宗门政治',
               type: 'cruel',
-              effect: '执念+10，业力-10，道心+5',
+              effect: '',
               apply: () => { state.will += 10; state.karma -= 10; state.dao += 5; state.flags.oppressed = true; }
+            }
+          ]
+        },
+        // 新增：深夜抉择
+        {
+          text: () => {
+            return `<p>大比之后的第三个月。深夜。</p>
+<p>陆麓在后山练功，忽然听到细微的哭声。循声找去，她看到一个内门弟子蜷缩在悬崖边——是赵元的弟子之一，<span class="highlight">李默</span>。</p>
+<p>他因为大比失利被赵元责罚，夺了法器，断了资源。走投无路。</p>
+<p>他看到陆麓，眼里有恐惧也有羞耻——毕竟他曾经嘲笑过她。</p>
+<p>陆麓看着他，没说话。</p>`;
+          },
+          worldVoice: '有意思。伤害过她的人，现在落难了。你看到陆麓在犹豫——不是犹豫要不要帮，而是犹豫怎么帮才不会让对方难堪。你要在这一刻做点什么吗？',
+          choices: [
+            {
+              label: '月光',
+              text: '让一束月光照亮崖边的一株草药——那是疗伤用的。给陆麓一个不用开口就能帮他的理由',
+              type: 'kind',
+              effect: '',
+              apply: () => { state.karma += 10; state.dao += 5; state.flags.helpedEnemy = true; }
+            },
+            {
+              label: '黑暗',
+              text: '让云遮住月亮。在黑暗中，谁也看不清谁的脸——有些话，在黑暗里更容易说出口',
+              type: 'neutral',
+              effect: '',
+              apply: () => { state.dao += 8; state.will += 3; }
+            },
+            {
+              label: '考验',
+              text: '让崖边的石头开始松动。如果陆麓要救他，她自己也会有危险',
+              type: 'cruel',
+              effect: '',
+              apply: () => { state.will += 12; state.karma -= 5; }
             }
           ]
         }
@@ -870,12 +933,44 @@ const story = {
 <p>第七天，秘境关闭。陆麓走了出来。修为：<span class="gold">筑基后期</span>。不是最亮眼的成绩，但她活着出来了。</p>`;
             }
           },
+          worldVoice: '秘境之后，她需要做一个选择。',
+          choices: [
+            {
+              label: '独处',
+              text: '让她一个人在山顶坐一夜，看星星，想清楚自己到底要什么',
+              type: 'neutral',
+              effect: '',
+              apply: () => { state.dao += 8; state.will -= 3; }
+            },
+            {
+              label: '重逢',
+              text: '让她在下山路上遇到多年未见的叔婶——他们老了很多',
+              type: 'kind',
+              effect: '',
+              apply: () => { state.karma += 8; state.will -= 5; }
+            },
+            {
+              label: '挑衅',
+              text: '让赵元亲自来找她，带着一个她无法拒绝的交易——拜他为师，获得最好的资源',
+              type: 'cruel',
+              effect: '',
+              apply: () => { state.will += 8; state.dao += 5; }
+            }
+          ]
+        },
+        // 最终抉择
+        {
+          text: () => {
+            return `<p>一切尘埃落定。</p>
+<p>陆麓站在云岚山巅，看着脚下的万里河山。风吹起她的衣袍。</p>
+<p>这些年的一切——劈柴的小村、碎裂的测灵石、通宵的修炼、擂台上的血、秘境中的生死——都在这一刻安静下来。</p>
+<p>她闭上眼，深深吸了一口气。</p>
+<p>你感受到她的心境：不是平静，是<span class="gold">坦然</span>。无论接下来发生什么，她都准备好了。</p>`;
+          },
           worldVoice: () => {
-            // Determine ending
             const daoHigh = state.dao >= 70;
             const karmaHigh = state.karma >= 60;
             const willHigh = state.will >= 80;
-            const willLow = state.will < 40;
 
             if (daoHigh && karmaHigh) return '她的道心清明，业力端正。飞升之路，已在脚下。你要送她最后一程吗？';
             if (willHigh && !karmaHigh) return '她的执念如此强烈，你闻到了入魔的气息。但谁说入魔就是错的呢？';
@@ -1120,6 +1215,54 @@ function showTransition(text, callback) {
   }, 1500);
 }
 
+function analyzeMBTI() {
+  const kindCount = state.choices.filter(c => c.type === 'kind').length;
+  const cruelCount = state.choices.filter(c => c.type === 'cruel').length;
+  const neutralCount = state.choices.filter(c => c.type === 'neutral').length;
+  const total = state.choices.length;
+
+  // E vs I: 主动干预(kind+cruel) vs 旁观(neutral)
+  const activeRatio = (kindCount + cruelCount) / total;
+  const E = activeRatio > 0.6;
+
+  // S vs N: 实际帮助(kind) vs 抽象试炼(cruel)
+  const N = cruelCount >= kindCount || state.dao > 65;
+
+  // T vs F: 试炼/公平(cruel+neutral) vs 赐福/情感(kind)
+  const T = (cruelCount + neutralCount * 0.5) > kindCount;
+
+  // J vs P: 一致性倾向 vs 随机切换
+  let switches = 0;
+  for (let i = 1; i < state.choices.length; i++) {
+    if (state.choices[i].type !== state.choices[i-1].type) switches++;
+  }
+  const J = switches < total * 0.5;
+
+  const type = (E ? 'E' : 'I') + (N ? 'N' : 'S') + (T ? 'T' : 'F') + (J ? 'J' : 'P');
+
+  const profiles = {
+    'INTJ': { name: '策略家', desc: '你像一个棋手，每一步都有深意。你不轻易施恩，也不随意降罚——你只做你认为"正确"的事。陆麓对你来说，是一盘精妙的棋局。' },
+    'INTP': { name: '思考者', desc: '你对陆麓的命运充满好奇，但更想看看"如果这样会怎样"。你的每个选择都像一次实验——不是残忍，只是想知道答案。' },
+    'ENTJ': { name: '统帅', desc: '你是一个有明确目标的天道：让陆麓变强。手段可以温柔也可以残酷，但方向从不动摇。你天生适合做世界意志。' },
+    'ENTP': { name: '辩论家', desc: '你喜欢打破常规，试炼和机缘交替使用。你不是在控制陆麓的命运——你是在和她"玩"。而且你享受这个过程。' },
+    'INFJ': { name: '守护者', desc: '你的每个选择背后都藏着温柔。即使降下试炼，也是因为你相信她能扛过去。你不是在考验她——你是在帮她成为最好的自己。' },
+    'INFP': { name: '理想主义者', desc: '你心中有一个关于陆麓的理想结局，你一直在朝那个方向引导。你对她的共情如此之深，以至于她受伤时，你比她更难过。' },
+    'ENFJ': { name: '导师', desc: '你就像一个操心的老师，既给机缘又给试炼，但每一步都是为了她好。你对陆麓的关注，超越了天道的职责——这是爱。' },
+    'ENFP': { name: '冒险家', desc: '你的选择跳跃而大胆，时而赐福时而试炼。你相信命运不该是一条直线——最精彩的故事，都是在意外中诞生的。' },
+    'ISTJ': { name: '守序者', desc: '你相信规则。天道有天道的法则：善有善报，恶有恶报。你的每一个选择都遵循这个原则——公平，稳定，不偏不倚。' },
+    'ISFJ': { name: '守望者', desc: '你默默地守护着陆麓，不求回报。你给的帮助总是恰到好处——不多不少，刚好够她自己走完剩下的路。' },
+    'ESTJ': { name: '执行者', desc: '你做选择果断且逻辑清晰。该帮就帮，该考验就考验。你不纠结——因为天道本就不该有太多感情。' },
+    'ESFJ': { name: '关怀者', desc: '你几乎每次都选择帮助陆麓。在你心里，天道的意义不是考验——是守护。你会是一个非常温暖的世界意志。' },
+    'ISTP': { name: '工匠', desc: '你的选择精准而克制。不多干预，但每次干预都恰到好处。你像一个调音师，只在音准偏了的时候才伸手。' },
+    'ISFP': { name: '诗人', desc: '你被陆麓的故事深深触动。你的选择往往跟随感觉而非逻辑——但正因如此，你创造了最美的命运。' },
+    'ESTP': { name: '冒险者', desc: '你喜欢制造戏剧性。平淡的命运不是你的风格——你要的是高潮迭起、绝处逢生。在你手下，陆麓的人生像一部精彩的小说。' },
+    'ESFP': { name: '表演者', desc: '你让陆麓的命运充满了惊喜和波折。你不是在做一个天道——你是在讲一个好故事。每个选择都是为了让剧情更精彩。' }
+  };
+
+  const profile = profiles[type] || profiles['INFJ'];
+  return { type, ...profile };
+}
+
 function showEnding() {
   const ending = story.endings[state.flags.ending];
 
@@ -1130,6 +1273,7 @@ function showEnding() {
   let kindCount = state.choices.filter(c => c.type === 'kind').length;
   let cruelCount = state.choices.filter(c => c.type === 'cruel').length;
   let neutralCount = state.choices.filter(c => c.type === 'neutral').length;
+  const mbti = analyzeMBTI();
 
   endScreen.innerHTML = `
     <div class="ending-type">结局 · ${ending.type}</div>
@@ -1166,6 +1310,14 @@ function showEnding() {
           <div class="value accent">${cruelCount}</div>
         </div>
       </div>
+    </div>
+    <div class="ending-stats" style="margin-top:1.5rem;border-color:var(--gold);">
+      <h3 style="color:var(--accent);">天道性格分析</h3>
+      <div style="margin:1rem 0;">
+        <div style="font-size:2rem;font-weight:900;color:var(--accent);letter-spacing:0.2em;">${mbti.type}</div>
+        <div style="font-size:0.9rem;color:var(--gold-dim);margin-top:0.3rem;">${mbti.name}</div>
+      </div>
+      <div style="font-size:0.85rem;color:var(--text-dim);line-height:1.8;text-align:left;padding:0 0.5rem;">${mbti.desc}</div>
     </div>
     <button class="restart-btn" onclick="restartGame()">再造乾坤</button>
     <p style="text-align:center;font-size:0.75rem;color:var(--text-muted);margin-top:1rem;">
